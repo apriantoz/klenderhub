@@ -115,6 +115,7 @@ export default function SchedulePage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    navigate('/');
     navigate(0); // Memuat ulang halaman di Vite untuk membersihkan state sesi
   };
 
@@ -220,7 +221,7 @@ export default function SchedulePage() {
           )}
         </TabsContent>
       </Tabs>
-      
+
       {/* Dialog Konfirmasi Hapus */}
       <AlertDialog
         open={!!deleteTarget}
