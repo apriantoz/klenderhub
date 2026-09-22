@@ -18,9 +18,9 @@ export function ScheduleHeader({
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 className="text-3xl font-bold">KalenderHub</h1>
+        <h1 className="text-3xl font-bold">KaLender Hub</h1>
         <p className="text-muted-foreground/80">
-          Lihat dan kelola jadwal perkuliahan mingguan.
+          Lihat dan kelola jadwal perkuliahan.
         </p>
       </div>
       <div className="flex items-center gap-3">

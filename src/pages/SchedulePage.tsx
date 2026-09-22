@@ -13,8 +13,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar1Icon, InfoIcon, TrendingUpIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { ScheduleHeader } from "@/components/ScheduleHeader";
 import { ScheduleFilterBar } from "@/components/ScheduleFilterBar";
@@ -144,83 +142,36 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6 overflow-x-hidden">
-      {/* 1. Komponen Header */}
+    <div className="mx-auto w-full max-w-7xl space-y-6 overflow-x-hidden px-4 py-6 md:px-6">
       <ScheduleHeader
         isAdmin={isAdmin}
         onReloadSchedules={reloadSchedules}
         onLogout={handleLogout}
       />
 
-      <Tabs defaultValue="monitor">
-        <TabsList>
-          <TabsTrigger value="monitor" className="flex items-center gap-2">
-            <InfoIcon className="h-4 w-4" />
-            <span>Status</span>
-          </TabsTrigger>
-          <TabsTrigger value="statistik" className="flex items-center gap-2">
-            <TrendingUpIcon className="h-4 w-4" />
-            <span>Statistik</span>
-          </TabsTrigger>
-          <TabsTrigger value="jadwal" className="flex items-center gap-2">
-            <Calendar1Icon className="h-4 w-4" />
-            <span>Jadwal</span>
-          </TabsTrigger>
-        </TabsList>
-
-        {/* Tab Monitor */}
-        <TabsContent value="monitor" className="my-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-16 w-full">
-              <Spinner className="size-10" />
-            </div>
-          ) : (
-            <div>
-              Tas
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Tab Statistik */}
-        <TabsContent value="statistik" className="my-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-16 w-full">
-              <Spinner className="size-10" />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-              Tes
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Tab Jadwal dengan ScheduleSkeleton */}
-        <TabsContent value="jadwal">
-          {loading ? (
-            <div className="my-4">
-              skeleton
-            </div>
-          ) : (
-            <div className="w-full my-4 space-y-4">
-              <ScheduleFilterBar
-                selectedProdi={selectedProdi}
-                selectedRoom={selectedRoom}
-                onProdiChange={setSelectedProdi}
-                onRoomChange={setSelectedRoom}
-                onResetFilter={handleResetFilter}
-                filteredSchedules={filteredSchedules}
-              />
-              <ScheduleTimeline
-                filteredSchedules={filteredSchedules}
-                conflictingIds={conflictingIds}
-                isAdmin={isAdmin}
-                onReloadSchedules={reloadSchedules}
-                onDeleteClick={handleDeleteClick}
-              />
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      {loading ? (
+        <div className="place-items-center">
+          <Spinner className="size-10" />
+        </div>
+      ) : (
+        <div className="my-4 w-full space-y-4">
+          <ScheduleFilterBar
+            selectedProdi={selectedProdi}
+            selectedRoom={selectedRoom}
+            onProdiChange={setSelectedProdi}
+            onRoomChange={setSelectedRoom}
+            onResetFilter={handleResetFilter}
+            filteredSchedules={filteredSchedules}
+          />
+          <ScheduleTimeline
+            filteredSchedules={filteredSchedules}
+            conflictingIds={conflictingIds}
+            isAdmin={isAdmin}
+            onReloadSchedules={reloadSchedules}
+            onDeleteClick={handleDeleteClick}
+          />
+        </div>
+      )}
 
       {/* Dialog Konfirmasi Hapus */}
       <AlertDialog
@@ -242,7 +193,7 @@ export default function SchedulePage() {
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              className="bg-rose-600 hover:bg-rose-700 text-white"
+              className="bg-rose-600 text-white hover:bg-rose-700"
             >
               Ya, Hapus
             </AlertDialogAction>
@@ -250,5 +201,5 @@ export default function SchedulePage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
+  )
 }
