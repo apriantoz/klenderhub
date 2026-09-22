@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from "react-router"; // <-- Gunakan useNavigate dari react-router
-// import { supabase } from "@/lib/supabase"; // <-- Pastikan supabase sudah diimpor sesuai konfigurasi Anda
+import { supabase } from "@/lib/supabase"; // <-- Pastikan supabase sudah diimpor sesuai konfigurasi Anda
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -15,25 +15,34 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate(); // <-- Inisialisasi navigate
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage(null);
 
-    // Contoh simulasi login (Ganti dengan logika supabase Anda yang sebenarnya)
     try {
-      // const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
       
-      // Simulasi sukses:
-      setTimeout(() => {
+      if (error) {
         setLoading(false);
-        navigate('/'); // <-- Pindah ke halaman utama setelah login
-      }, 1000);
+        setErrorMessage(error.message);
+        return;
+      }
 
+      // Jika sukses, arahkan ke halaman utama
+      setLoading(false);
+      navigate('/');
+      
     } catch (err: unknown) {
       setLoading(false);
-      const error = err as Error;
-      setErrorMessage(error.message || "Terjadi kesalahan saat login");
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage("Terjadi kesalahan yang tidak diketahui");
+      }
     }
   };
 
