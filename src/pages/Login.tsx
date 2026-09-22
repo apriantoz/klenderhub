@@ -34,7 +34,7 @@ export default function Login() {
 
       // Jika sukses, arahkan ke halaman utama
       setLoading(false);
-      navigate('/');
+      navigate('/schedule');
       
     } catch (err: unknown) {
       setLoading(false);

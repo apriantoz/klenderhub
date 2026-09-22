@@ -1,14 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
-import { getConflictingScheduleIds, Schedule } from "@/lib/schedule";
-import { ScheduleHeader } from "@/components/ScheduleHeader";
-import { ScheduleFilterBar } from "@/components/ScheduleFilterBar";
-import { ScheduleTimeline } from "@/components/ScheduleTimeline";
-import { LiveLabMonitor } from "@/components/LiveLabMonitor";
-import { ScheduleChart } from "@/components/ScheduleChart";
-import { RoomUsageChart } from "@/components/RoomUsageChart";
-import { ScheduleSkeleton } from "@/components/ScheduleSkeleton";
-import { FooterHub } from "@/components/FooterHub";
+import { getConflictingScheduleIds } from "@/lib/schedule";
+import type { Schedule } from "@/lib/schedule";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +16,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar1Icon, InfoIcon, TrendingUpIcon } from "lucide-react";
 import { useNavigate } from "react-router";
+import { ScheduleHeader } from "@/components/ScheduleHeader";
+import { ScheduleFilterBar } from "@/components/ScheduleFilterBar";
+import { ScheduleTimeline } from "@/components/ScheduleTimeline";
 
 export default function SchedulePage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -178,7 +174,9 @@ export default function SchedulePage() {
               <Spinner className="size-10" />
             </div>
           ) : (
-            <LiveLabMonitor schedules={schedules} />
+            <div>
+              Tas
+            </div>
           )}
         </TabsContent>
 
@@ -190,8 +188,7 @@ export default function SchedulePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-              <ScheduleChart schedules={filteredSchedules} />
-              <RoomUsageChart schedules={schedules} />
+              Tes
             </div>
           )}
         </TabsContent>
@@ -200,7 +197,7 @@ export default function SchedulePage() {
         <TabsContent value="jadwal">
           {loading ? (
             <div className="my-4">
-              <ScheduleSkeleton />
+              skeleton
             </div>
           ) : (
             <div className="w-full my-4 space-y-4">
@@ -223,9 +220,7 @@ export default function SchedulePage() {
           )}
         </TabsContent>
       </Tabs>
-
-      <FooterHub />
-
+      
       {/* Dialog Konfirmasi Hapus */}
       <AlertDialog
         open={!!deleteTarget}
