@@ -1,8 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@radix-ui/themes";
 import { AddScheduleDialog } from "@/components/add-schedule-dialog";
 import { LogIn, LogOut } from "lucide-react";
 import { AdminMessageDialog } from "./AdminMessage";
 import { Link } from "react-router";
+import { Text } from "@radix-ui/themes";
 
 interface ScheduleHeaderProps {
   isAdmin: boolean;
@@ -18,7 +19,7 @@ export function ScheduleHeader({
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 className="text-3xl font-bold">KaLender Hub</h1>
+        <Text size="8" weight="medium">KaLender Hub</Text>
         <p className="text-muted-foreground/80">
           Lihat dan kelola jadwal perkuliahan.
         </p>
@@ -29,7 +30,6 @@ export function ScheduleHeader({
             <AddScheduleDialog onSuccess={onReloadSchedules} />
             <Button
               variant="outline"
-              size={'sm'}
               onClick={onLogout}
             >
               <LogOut className="mr-1.5 h-4 w-4" />Logout
@@ -37,7 +37,7 @@ export function ScheduleHeader({
           </>
         ) : (
           <Link to="/login">
-            <Button variant="outline" size={'sm'}>
+            <Button variant="outline">
               <LogIn className="mr-1.5 h-4 w-4"/>Login
             </Button>
           </Link>

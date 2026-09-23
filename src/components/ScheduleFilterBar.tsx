@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Box, Button, Flex, Text } from "@radix-ui/themes"
 import {
   Filter,
   RotateCcw,
@@ -20,13 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardAction,
-} from "@/components/ui/card"
+import { Card } from "@radix-ui/themes"
 import { LAB_ROOMS } from "@/lib/room-constants"
 import { PRODI } from "@/lib/prodi-constants"
 import type { Schedule } from "@/lib/schedule"
@@ -52,110 +46,98 @@ export function ScheduleFilterBar({
   const roomOptions = LAB_ROOMS
 
   return (
-    <div className="w-full space-y-4">
-      <Card>
-        <CardHeader className="flex flex-col items-stretch justify-between gap-3 md:flex-row md:items-center">
-          <div className="flex items-center gap-2.5">
-            <div className="rounded-md border p-1.5 text-muted-foreground">
-              <Filter className="h-3.5 w-3.5" />
-            </div>
-            <div>
-              <CardTitle className="text-md font-semibold tracking-tight">
-                Filter & Rekap
-              </CardTitle>
-              <CardDescription className="text-xs text-muted-foreground/80">
-                Filter jadwal berdasarkan program studi atau ruangan.
-              </CardDescription>
-            </div>
-          </div>
+    <Box>
+  <Card>
+    <Flex align="center" justify="between" gap="4" wrap="wrap">
+      {/* Sisi Kiri: Judul & Deskripsi */}
+      <Flex align="center" gap="3">
+        <Filter className="h-4 w-4 shrink-0 text-gray-500" />
+        <Box>
+          <Text as="div" weight="bold">
+            Filter & Rekap
+          </Text>
+          <Text as="div" size="2" color="gray">
+            Filter jadwal berdasarkan program studi atau ruangan.
+          </Text>
+        </Box>
+      </Flex>
 
-          <CardAction>
-            <div className="flex w-full flex-wrap items-center gap-2.5 md:w-auto">
-              {/* Filter Prodi */}
-              <Select
-                value={selectedProdi}
-                onValueChange={(val) => onProdiChange(val ?? "")}
-              >
-                <SelectTrigger className="w-full bg-background/40 text-xs md:w-50">
-                  <SelectValue placeholder="Semua Program Studi" />
-                </SelectTrigger>
-                <SelectContent className="bg-background/50 backdrop-blur-md">
-                  {prodiOptions.map((prodi) => (
-                    <SelectItem key={prodi} value={prodi} className="text-xs">
-                      {prodi}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      {/* Sisi Kanan: Kumpulan Filter & Tombol Aksi */}
+      <Flex align="center" gap="3" wrap="wrap">
+        {/* Filter Prodi */}
+        <Select
+          value={selectedProdi}
+          onValueChange={(val) => onProdiChange(val ?? "")}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Semua Program Studi" />
+          </SelectTrigger>
+          <SelectContent>
+            {prodiOptions.map((prodi) => (
+              <SelectItem key={prodi} value={prodi}>
+                {prodi}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-              {/* Filter Ruangan */}
-              <Select
-                value={selectedRoom}
-                onValueChange={(val) => onRoomChange(val ?? "")}
-              >
-                <SelectTrigger className="w-full bg-background/40 text-xs md:w-50">
-                  <SelectValue placeholder="Semua Ruangan" />
-                </SelectTrigger>
-                <SelectContent className="bg-background/50 backdrop-blur-md">
-                  {roomOptions.map((room) => (
-                    <SelectItem key={room} value={room} className="text-xs">
-                      {room}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Filter Ruangan */}
+        <Select
+          value={selectedRoom}
+          onValueChange={(val) => onRoomChange(val ?? "")}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Semua Ruangan" />
+          </SelectTrigger>
+          <SelectContent>
+            {roomOptions.map((room) => (
+              <SelectItem key={room} value={room}>
+                {room}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-              {/* Reset Filter */}
-              {(selectedProdi !== "" || selectedRoom !== "") && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onResetFilter}
-                  className="h-9 gap-1.5 text-xs text-muted-foreground"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Reset
-                </Button>
-              )}
+        {/* Reset Filter */}
+        {(selectedProdi !== "" || selectedRoom !== "") && (
+          <Button
+            variant="ghost"
+            onClick={onResetFilter}
+          >
+            <RotateCcw className="h-3.5 w-3.5 mr-1" />
+            Reset
+          </Button>
+        )}
 
-              {/* Export Rekap Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-9 w-full cursor-pointer gap-2 bg-background/40 text-xs md:w-auto"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      <span>Export</span>
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent
-                  align="end"
-                  className="w-48 bg-background/50 backdrop-blur-md"
-                >
-                  <DropdownMenuItem
-                    onClick={() => exportToExcel(filteredSchedules)}
-                    className="cursor-pointer gap-2 py-2 text-xs"
-                  >
-                    <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
-                    <span>Excel (.xlsx)</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => exportToPDF(filteredSchedules)}
-                    className="cursor-pointer gap-2 py-2 text-xs"
-                  >
-                    <FileText className="h-4 w-4 text-rose-400" />
-                    <span>PDF (.pdf)</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardAction>
-        </CardHeader>
-      </Card>
-    </div>
+        {/* Export Rekap Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="outline">
+                <Download className="h-3.5 w-3.5 mr-1" />
+                <span>Export</span>
+              </Button>
+            }
+          />
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => exportToExcel(filteredSchedules)}
+            >
+              <FileSpreadsheet className="h-4 w-4 text-emerald-400 mr-2" />
+              <span>Excel (.xlsx)</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => exportToPDF(filteredSchedules)}
+              className="cursor-pointer gap-2 py-2 text-xs"
+            >
+              <FileText className="h-4 w-4 text-rose-400 mr-2" />
+              <span>PDF (.pdf)</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Flex>
+    </Flex>
+  </Card>
+</Box>
   )
 }

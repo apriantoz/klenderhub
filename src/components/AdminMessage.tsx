@@ -1,24 +1,11 @@
 import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@radix-ui/themes";
+import { Dialog, Flex, Text, TextField, TextArea } from "@radix-ui/themes";
 import { MessageSquarePlus, Send, AlertCircle } from "lucide-react";
-import { FieldGroup, Field } from "@/components/ui/field";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 // Sesuaikan import toast jika menggunakan sonner atau toaster kustom
 import { toast } from "@/components/ui/toast"; 
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 export function AdminMessageDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,7 +75,7 @@ export function AdminMessageDialog() {
   };
 
   return (
-    <Dialog
+    <Dialog.Root
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open);
@@ -98,103 +85,92 @@ export function AdminMessageDialog() {
         }
       }}
     >
-      <DialogTrigger
-        render={
-          <Button variant="outline" size="sm">
-            <MessageSquarePlus className="w-4 h-4 text-primary" />
-            Lapor / Hubungi Admin
-          </Button>
-        }
-      />
+      <Dialog.Trigger>
+        <Button variant="outline">
+          <MessageSquarePlus className="w-4 h-4" />
+          Lapor / Hubungi Admin
+        </Button>
+      </Dialog.Trigger>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSendMessage} className="space-y-4">
-          <DialogHeader>
-            <DialogTitle>Kirim Pesan ke Admin Lab</DialogTitle>
-            <DialogDescription>
-              Laporkan kendala fasilitas lab atau tanyakan jadwal khusus
-              langsung kepada pengelola Gedung Desain Hub.
-            </DialogDescription>
-          </DialogHeader>
+      <Dialog.Content maxWidth="450px">
+        <Dialog.Title>Kirim Pesan ke Admin Lab</Dialog.Title>
+        <Dialog.Description size="2" mb="4">
+          Laporkan kendala fasilitas lab atau tanyakan jadwal khusus langsung
+          kepada pengelola Gedung Desain Hub.
+        </Dialog.Description>
 
-          {errorMessage && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Gagal</AlertTitle>
-              <AlertDescription>{errorMessage}</AlertDescription>
-            </Alert>
-          )}
+        <form onSubmit={handleSendMessage}>
+          <Flex direction="column" gap="3">
+            {errorMessage && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Gagal</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
 
-          <FieldGroup className="grid gap-4 py-1">
-            <Field className="grid gap-2">
-              <Label htmlFor="name" className="text-xs text-muted-foreground">
+            {/* Nama / Identitas */}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
                 Nama / Identitas (Opsional)
-              </Label>
-              <Input
-                id="name"
+              </Text>
+              <TextField.Root
                 placeholder="Contoh: Budi (Mahasiswa Animasi)"
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
                 disabled={isSubmitting}
-                className="text-sm"
               />
-            </Field>
-            <Field className="grid gap-2">
-              <Label htmlFor="wa" className="text-xs text-muted-foreground">
-                No. WhatsApp untuk konfirmasi
-                <span className="text-destructive">*</span>
-              </Label>
-              <InputGroup>
-                <InputGroupAddon align="inline-start">+62</InputGroupAddon>
-                <InputGroupInput
-                  id="wa"
-                  placeholder="8123456789"
-                  type="tel"
-                  className="text-sm"
-                  value={senderWA}
-                  onChange={(e) => {
-                    const numericValue = e.target.value.replace(/\D/g, "");
-                    setSenderWA(numericValue);
-                  }}
-                  disabled={isSubmitting}
-                  required
-                />
-              </InputGroup>
-            </Field>
+            </label>
 
-            <Field className="grid gap-2">
-              <Label htmlFor="room" className="text-xs text-muted-foreground">
+            {/* No. WhatsApp */}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                No. WhatsApp untuk konfirmasi <span className="text-rose-500">*</span>
+              </Text>
+              <TextField.Root
+                placeholder="8123456789"
+                type="tel"
+                value={senderWA}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  setSenderWA(numericValue);
+                }}
+                disabled={isSubmitting}
+                required
+              >
+                <TextField.Slot side="left">+62</TextField.Slot>
+              </TextField.Root>
+            </label>
+
+            {/* Lokasi Lab / Ruangan */}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
                 Lokasi Lab / Ruangan (Opsional)
-              </Label>
-              <Input
-                id="room"
+              </Text>
+              <TextField.Root
                 placeholder="Contoh: Ruang 1A"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
                 disabled={isSubmitting}
-                className="text-sm"
               />
-            </Field>
+            </label>
 
-            <Field className="grid gap-2">
-              <Label
-                htmlFor="message"
-                className="text-xs text-muted-foreground"
-              >
-                Pesan / Kendala <span className="text-destructive">*</span>
-              </Label>
-              <Textarea
-                id="message"
+            {/* Pesan / Kendala */}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                Pesan / Kendala <span className="text-rose-500">*</span>
+              </Text>
+              <TextArea
                 placeholder="Tuliskan kendala fasilitas (misal: TV mati, AC kurang dingin)..."
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 disabled={isSubmitting}
-                className="min-h-[100px] resize-none text-sm"
+                className="min-h-[100px] resize-none text-sm w-full"
               />
-            </Field>
+            </label>
 
-            {/* Widget Cloudflare Turnstile menggunakan Vite Env */}
-            <div className="flex justify-center pt-1">
+            {/* Widget Cloudflare Turnstile */}
+            <Flex justify="center" pt="1">
               <Turnstile
                 ref={turnstileRef}
                 siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || ""}
@@ -208,21 +184,26 @@ export function AdminMessageDialog() {
                 }
                 options={{ theme: "dark" }}
               />
-            </div>
-          </FieldGroup>
+            </Flex>
+          </Flex>
 
-          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+          {/* Tombol Aksi Bawah */}
+          <Flex gap="3" mt="4" justify="end">
+            <Dialog.Close>
+              <Button variant="soft" color="gray" type="button">
+                Batal
+              </Button>
+            </Dialog.Close>
             <Button
               type="submit"
               disabled={isSubmitting || !messageText.trim() || !turnstileToken}
-              className="gap-2 w-full"
             >
               <Send className="w-4 h-4" />
               {isSubmitting ? "Mengirim..." : "Kirim Laporan"}
             </Button>
-          </DialogFooter>
+          </Flex>
         </form>
-      </DialogContent>
-    </Dialog>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 }
