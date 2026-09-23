@@ -3,7 +3,6 @@ import { Button } from "@radix-ui/themes";
 import { Dialog, Flex, Text, TextField, TextArea } from "@radix-ui/themes";
 import { MessageSquarePlus, Send, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-// Sesuaikan import toast jika menggunakan sonner atau toaster kustom
 import { toast } from "@/components/ui/toast"; 
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 
@@ -34,7 +33,8 @@ export function AdminMessageDialog() {
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/send-telegram", {
+      // ⚠️ Endpoint diubah dari /api/send-telegram ke /api/report
+      const res = await fetch("/api/report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -49,8 +49,9 @@ export function AdminMessageDialog() {
       const data = await res.json();
 
       if (res.ok) {
-        toast.add(
-          {description:"Laporan kendala berhasil dikirim ke Telegram Admin."});
+        toast.add({
+          description: "Laporan kendala berhasil dikirim ke Telegram Admin.",
+        });
 
         setMessageText("");
         setSenderName("");
