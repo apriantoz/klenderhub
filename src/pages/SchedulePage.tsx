@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Spinner } from "@/components/ui/spinner";
+import { Skeleton} from "@radix-ui/themes";
 import { useNavigate } from "react-router";
 import { ScheduleHeader } from "@/components/ScheduleHeader";
 import { ScheduleFilterBar } from "@/components/ScheduleFilterBar";
@@ -143,63 +143,63 @@ export default function SchedulePage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 overflow-x-hidden px-4 py-6 md:px-6">
-      <ScheduleHeader
+  <ScheduleHeader
+    isAdmin={isAdmin}
+    onReloadSchedules={reloadSchedules}
+    onLogout={handleLogout}
+  />
+
+<div className="my-4 w-full space-y-4">
+    {/* Bungkus langsung komponennya dengan Skeleton Radix */}
+    <Skeleton loading={loading}>
+      <ScheduleFilterBar
+        selectedProdi={selectedProdi}
+        selectedRoom={selectedRoom}
+        onProdiChange={setSelectedProdi}
+        onRoomChange={setSelectedRoom}
+        onResetFilter={handleResetFilter}
+        filteredSchedules={filteredSchedules}
+      />
+    </Skeleton>
+
+    <Skeleton loading={loading}>
+      <ScheduleTimeline
+        filteredSchedules={filteredSchedules}
+        conflictingIds={conflictingIds}
         isAdmin={isAdmin}
         onReloadSchedules={reloadSchedules}
-        onLogout={handleLogout}
+        onDeleteClick={handleDeleteClick}
       />
+    </Skeleton>
+  </div>
 
-      {loading ? (
-        <div className="place-items-center">
-          <Spinner className="size-10" />
-        </div>
-      ) : (
-        <div className="my-4 w-full space-y-4">
-          <ScheduleFilterBar
-            selectedProdi={selectedProdi}
-            selectedRoom={selectedRoom}
-            onProdiChange={setSelectedProdi}
-            onRoomChange={setSelectedRoom}
-            onResetFilter={handleResetFilter}
-            filteredSchedules={filteredSchedules}
-          />
-          <ScheduleTimeline
-            filteredSchedules={filteredSchedules}
-            conflictingIds={conflictingIds}
-            isAdmin={isAdmin}
-            onReloadSchedules={reloadSchedules}
-            onDeleteClick={handleDeleteClick}
-          />
-        </div>
-      )}
-
-      {/* Dialog Konfirmasi Hapus */}
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Yakin ingin menghapus jadwal?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tindakan ini akan menghapus jadwal perkuliahan{" "}
-              <span className="font-semibold text-foreground">
-                &ldquo;{deleteTarget?.courseName}&rdquo;
-              </span>{" "}
-              secara permanen dari sistem.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-rose-600 text-white hover:bg-rose-700"
-            >
-              Ya, Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+  {/* Dialog Konfirmasi Hapus */}
+  <AlertDialog
+    open={!!deleteTarget}
+    onOpenChange={(open) => !open && setDeleteTarget(null)}
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Yakin ingin menghapus jadwal?</AlertDialogTitle>
+        <AlertDialogDescription>
+          Tindakan ini akan menghapus jadwal perkuliahan{" "}
+          <span className="font-semibold text-foreground">
+            &ldquo;{deleteTarget?.courseName}&rdquo;
+          </span>{" "}
+          secara permanen dari sistem.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Batal</AlertDialogCancel>
+        <AlertDialogAction
+          onClick={confirmDelete}
+          className="bg-rose-600 text-white hover:bg-rose-700"
+        >
+          Ya, Hapus
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+</div>
   )
 }
