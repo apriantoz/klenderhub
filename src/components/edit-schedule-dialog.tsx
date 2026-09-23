@@ -4,33 +4,12 @@ import { type Schedule, DAYS_OF_WEEK } from "@/lib/schedule";
 import { LAB_ROOMS } from "@/lib/room-constants";
 import { PRODI } from "@/lib/prodi-constants";
 import { SEMESTER } from "@/lib/semester-constants";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Button } from "@radix-ui/themes";
+import { Dialog } from "@radix-ui/themes";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, Text, Flex, Box, TextField } from "@radix-ui/themes";
 import { Pencil, AlertCircle, CheckCircle2 } from "lucide-react";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
 
 interface EditScheduleDialogProps {
   schedule: Schedule;
@@ -111,7 +90,7 @@ export function EditScheduleDialog({
   };
 
   return (
-    <Dialog
+    <Dialog.Root
       open={open}
       onOpenChange={(val) => {
         setOpen(val);
@@ -119,156 +98,174 @@ export function EditScheduleDialog({
         setSuccessMsg(null);
       }}
     >
-      <DialogTrigger
-        className="w-full flex items-center gap-2 px-2 py-2 text-xs rounded-sm text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors outline-none select-none font-normal"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Pencil className="h-3.5 w-3.5" />
-        <span>Edit</span>
-      </DialogTrigger>
+      <Dialog.Trigger>
+        <button
+          className="w-full flex items-center gap-2 px-2 py-2 text-xs rounded-sm text-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors outline-none select-none font-normal bg-transparent border-none text-left"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Pencil className="h-3.5 w-3.5" />
+          <span>Edit</span>
+        </button>
+      </Dialog.Trigger>
 
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit Jadwal Perkuliahan</DialogTitle>
-        </DialogHeader>
+      <Dialog.Content maxWidth="450px">
+        <Dialog.Title>Edit Jadwal Perkuliahan</Dialog.Title>
 
-        <form onSubmit={handleUpdate} className="space-y-4 mt-2">
-          {errorMsg && (
-            <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <span>{errorMsg}</span>
-            </div>
-          )}
+        <form onSubmit={handleUpdate}>
+          <Flex direction="column" gap="4" mt="2">
+            {errorMsg && (
+              <div className="flex items-center gap-2 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
-          {successMsg && (
-            <div className="flex items-center gap-2 p-3 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 rounded-md border border-emerald-500/20">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
-              <span>{successMsg}</span>
-            </div>
-          )}
+            {successMsg && (
+              <div className="flex items-center gap-2 p-3 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 rounded-md border border-emerald-500/20">
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <span>{successMsg}</span>
+              </div>
+            )}
 
-          <div className="space-y-2">
-            <Label htmlFor="edit_course_name">Nama Mata Kuliah</Label>
-            <Input
-              id="edit_course_name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="edit_prodi">Program Studi</Label>
-              <Combobox
-                items={PRODI}
-                value={prodi}
-                onValueChange={(val) => setProdi(val ?? "")}
-              >
-                <ComboboxInput placeholder="Pilih Prodi" />
-                <ComboboxContent>
-                  <ComboboxEmpty>Prodi tidak ditemukan</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem key={item} value={item}>
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit_semester">Semester</Label>
-              <Select
-                value={semester}
-                onValueChange={(val) => setSemester(val ?? String(SEMESTER[0]))}
-              >
-                <SelectTrigger id="edit_semester" className="w-full">
-                  <SelectValue placeholder="Pilih Semester" />
-                </SelectTrigger>
-                <SelectContent>
-                  {SEMESTER.map((sem) => (
-                    <SelectItem key={sem} value={String(sem)}>
-                      Semester {sem}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="edit_day">Hari</Label>
-              <Select
-                value={day}
-                onValueChange={(val) => setDay(val ?? DAYS_OF_WEEK[0])}
-              >
-                <SelectTrigger id="edit_day" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {DAYS_OF_WEEK.map((d) => (
-                    <SelectItem key={d} value={d}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="edit_room">Ruangan Lab</Label>
-              <Select
-                value={room}
-                onValueChange={(val) => setRoom(val ?? LAB_ROOMS[0])}
-              >
-                <SelectTrigger id="edit_room" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {LAB_ROOMS.map((r) => (
-                    <SelectItem key={r} value={r}>
-                      Lab {r}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="edit_start_time">Jam Mulai</Label>
-              <Input
-                id="edit_start_time"
-                type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+            {/* Nama Mata Kuliah */}
+            <Flex direction="column" gap="2">
+              <Label htmlFor="edit_course_name">Nama Mata Kuliah</Label>
+              <TextField.Root
+                id="edit_course_name"
+                value={courseName}
+                onChange={(e) => setCourseName(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit_end_time">Jam Selesai</Label>
-              <Input
-                id="edit_end_time"
-                type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+            </Flex>
 
-          <DialogFooter className="pt-4">
-            <Button type="submit" disabled={loading}>
-              {loading ? "Menyimpan..." : "Simpan Perubahan"}
-            </Button>
-          </DialogFooter>
+            {/* Program Studi & Semester */}
+            <Flex gap="3" width="100%">
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Text as="label" size="2" weight="medium" htmlFor="edit_prodi">
+                    Program Studi
+                  </Text>
+                  <Select.Root
+                    value={prodi}
+                    onValueChange={(val) => setProdi(val ?? "")}
+                  >
+                    <Select.Trigger placeholder="Pilih Prodi" className="w-full" />
+                    <Select.Content>
+                      {PRODI.map((item) => (
+                        <Select.Item key={item} value={String(item)}>
+                          {item}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </Box>
+
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Text as="label" size="2" weight="medium" htmlFor="edit_semester">
+                    Semester
+                  </Text>
+                  <Select.Root
+                    value={semester}
+                    onValueChange={(val) => setSemester(val ?? String(SEMESTER[0]))}
+                  >
+                    <Select.Trigger placeholder="Pilih Semester" className="w-full" />
+                    <Select.Content>
+                      {SEMESTER.map((sem) => (
+                        <Select.Item key={sem} value={String(sem)}>
+                          Semester {sem}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </Box>
+            </Flex>
+
+            {/* Hari & Ruangan */}
+            <Flex gap="3" width="100%">
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Text as="label" size="2" weight="medium" htmlFor="edit_day">
+                    Hari
+                  </Text>
+                  <Select.Root
+                    value={day}
+                    onValueChange={(val) => setDay(val ?? DAYS_OF_WEEK[0])}
+                  >
+                    <Select.Trigger id="edit_day" className="w-full" />
+                    <Select.Content>
+                      {DAYS_OF_WEEK.map((d) => (
+                        <Select.Item key={d} value={d}>
+                          {d}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </Box>
+
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Text as="label" size="2" weight="medium" htmlFor="edit_room">
+                    Ruangan Lab
+                  </Text>
+                  <Select.Root
+                    value={room}
+                    onValueChange={(val) => setRoom(val ?? LAB_ROOMS[0])}
+                  >
+                    <Select.Trigger id="edit_room" className="w-full" />
+                    <Select.Content>
+                      {LAB_ROOMS.map((r) => (
+                        <Select.Item key={r} value={r}>
+                          Lab {r}
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </Box>
+            </Flex>
+
+            {/* Jam Mulai & Jam Selesai */}
+            <Flex gap="3" width="100%">
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Label htmlFor="edit_start_time">Jam Mulai</Label>
+                  <Input
+                    id="edit_start_time"
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
+                  />
+                </Flex>
+              </Box>
+
+              <Box style={{ flex: 1 }}>
+                <Flex direction="column" gap="2">
+                  <Label htmlFor="edit_end_time">Jam Selesai</Label>
+                  <Input
+                    id="edit_end_time"
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
+                  />
+                </Flex>
+              </Box>
+            </Flex>
+
+            {/* Tombol Simpan Perubahan */}
+            <Flex justify="end" pt="3">
+              <Button type="submit" disabled={loading}>
+                {loading ? "Menyimpan..." : "Simpan Perubahan"}
+              </Button>
+            </Flex>
+          </Flex>
         </form>
-      </DialogContent>
-    </Dialog>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 }

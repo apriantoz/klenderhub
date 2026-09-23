@@ -9,7 +9,7 @@ import { FooterHub } from "./components/FooterHub.tsx"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Theme accentColor="iris" grayColor="olive" radius="large" panelBackground="translucent">
+    <Theme accentColor="jade" radius="large">
       <App />
       <FooterHub />
       <ThemePanel />
